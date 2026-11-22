@@ -1,13 +1,71 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>home</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title>Barangay Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <button class="theme-toggle-btn" (click)="toggleTheme()">
+        <ion-icon [name]="isDarkMode ? 'sunny-outline' : 'moon-outline'"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">home</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <div class="home-container">
+    
+    <div class="section-title">Good Day!, Admin!</div>
+
+    <br><br><br><br>
+    <div class="section-subtitle">Overall Statistics</div>
+    <br><br>
+
+    <div class="stats-grid">
+      <div class="stat-card" (click)="navigateTo('/complaints')" style="cursor: pointer;">
+        <span class="stat-label">Total Cases</span>
+        <h2 class="stat-number-total">{{ totalComplaints }}</h2>
+      </div>
+
+      <div class="stat-card pending" (click)="navigateTo('/complaints')" style="cursor: pointer;">
+        <span class="stat-label">Pending</span>
+        <h2 class="stat-number-pending">{{ pendingCases }}</h2>
+      </div>
+
+      <div class="stat-card resolved" (click)="navigateTo('/complaints')" style="cursor: pointer;">
+        <span class="stat-label">Resolved</span>
+        <h2 class="stat-number-resolved">{{ resolvedCase }}</h2>
+      </div>
+
+      <div class="stat-card cfa" (click)="navigateTo('/cfa-view')" style="cursor: pointer;">
+        <span class="stat-label">Ready for CFA</span>
+        <h2 class="stat-number-cfa">{{ cfaCount }}</h2>
+      </div>
+    </div>
+
+  </div>
 </ion-content>
+
+<div class="global-bottom-nav">
+  <button class="nav-item active" (click)="navigateTo('/home')">
+    <ion-icon name="home"></ion-icon>
+    <span>Home</span>
+  </button>
+  
+  <button class="nav-item" (click)="navigateTo('/complaints')">
+    <ion-icon name="document-text"></ion-icon>
+    <span>Complaints</span>
+  </button>
+  
+  <button class="nav-item" (click)="navigateTo('/audit-logs')">
+    <ion-icon name="shield-checkmark"></ion-icon>
+    <span>Logs</span>
+  </button>
+
+  <button class="nav-item" (click)="navigateTo('/cfa-view')">
+    <ion-icon name="newspaper"></ion-icon>
+    <span>CFA</span>
+  </button>
+
+  <button class="nav-item" (click)="navigateTo('/profile')">
+    <ion-icon name="person"></ion-icon>
+    <span>Profile</span>
+  </button>
+</div>

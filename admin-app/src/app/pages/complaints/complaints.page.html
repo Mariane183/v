@@ -1,13 +1,164 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>complaints</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title>Case Management</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">complaints</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding" style="--background: #f4f6f9;">
+
+  <div class="container" style="padding-bottom: 85px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px;">
+      <h2 style="margin: 0; color: #1f2937;">
+        {{ showArchived ? 'Archived Cases' : 'List of Complaints' }}
+      </h2>
+
+      <ion-button
+        size="small"
+        [fill]="showArchived ? 'solid' : 'outline'"
+        color="primary"
+        (click)="toggleArchivedView()">
+        <ion-icon name="archive-outline" slot="start"></ion-icon>
+        {{ showArchived ? 'Active Cases ' : 'Archived' }}
+      </ion-button>
+    </div>
+
+    <div *ngIf="cases.length === 0" class="ion-text-center ion-padding" style="color: #6b7280;">
+      <p>{{ showArchived ? 'No Archived Cases.' : 'Loading cases...' }}</p>
+    </div>
+
+    <ion-card
+      *ngFor="let c of cases"
+      class="complaint-card"
+      style="--background: #ffffff; color: #1f2937; border: 1px solid #e5e7eb; margin-bottom: 14px;">
+      <ion-card-content>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+          <div>
+            <h3 style="margin: 0; color: #111827;"><b>Complainant:</b> {{ c.complainant_name }}</h3>
+            <p style="margin: 4px 0 0; color: #374151;"><b>Respondent:</b> {{ c.respondent_name }}</p>
+          </div>
+
+          <ion-button
+            *ngIf="!showArchived"
+            color="warning"
+            size="small"
+            fill="outline"
+            (click)="setArchiveState(c, true); $event.stopPropagation()">
+            <ion-icon name="archive-outline" slot="start"></ion-icon>
+            Archive
+          </ion-button>
+
+          <ion-button
+            *ngIf="showArchived"
+            color="success"
+            size="small"
+            fill="solid"
+            (click)="setArchiveState(c, false); $event.stopPropagation()">
+            <ion-icon name="archive-outline" slot="start"></ion-icon>
+            Unarchive
+          </ion-button>
+        </div>
+
+        <div class="details-box" style="margin-top: 10px; color: #374151;">
+          <p><b>Complaints Details:</b> {{ c.complaint_details }}</p>
+        </div>
+
+        
+        <div *ngIf="c.evidence_image" class="evidence-container" style="margin-top: 10px;">
+          <img [src]="c.evidence_image" alt="Evidence" style="max-width: 100%; height: auto; border-radius: 8px;" />
+        </div>
+
+        <p style="margin-top: 10px; color: #1f2937;"><b>Current Status:</b>
+          <span class="badge" [ngClass]="{
+            'pending': c.status === 'Pending',
+            'success': c.status === 'Resolved',
+            'warning': c.status && c.status.includes('Hearing'),
+            'cfa': c.status === 'Ready for CFA'
+          }">{{ c.status || 'Pending' }}</span>
+        </p>
+
+       
+        <div style="margin-top: 15px;">
+          <ion-item
+            lines="solid"
+            [disabled]="isLocked(c) || showArchived"
+            style="--background: #f9fafb; --color: #111827; border: 1px solid #d1d5db; border-radius: 6px;">
+            <ion-textarea
+              label=" Remarks:"
+              labelPlacement="stacked"
+              placeholder="Input hearing result (napag-usapan)..."
+              [(ngModel)]="c.tempNotes"
+              [disabled]="isLocked(c) || showArchived"
+              [readonly]="isLocked(c) || showArchived"
+              rows="3">
+            </ion-textarea>
+          </ion-item>
+        </div>
+
+        <div
+          *ngIf="!showArchived"
+          class="status-action-group"
+          style="display: flex; gap: 10px; align-items: center; margin-top: 15px;">
+          <select
+            [(ngModel)]="c.tempStatus"
+            [disabled]="isLocked(c)"
+            class="native-select"
+            style="padding: 8px; border-radius: 6px; flex: 1; background: #ffffff; color: #111827; border: 1px solid #d1d5db;">
+            <option value="Pending">Pending</option>
+            <option value="1st Hearing">1st Hearing</option>
+            <option value="2nd Hearing">2nd Hearing</option>
+            <option value="3rd Hearing">3rd Hearing</option>
+            <option value="Ready for CFA">Ready for CFA</option>
+            <option value="Resolved">Resolved</option>
+          </select>
+
+          <ion-button
+            size="small"
+            color="primary"
+            [disabled]="isLocked(c)"
+            (click)="saveCaseUpdate(c); $event.stopPropagation()">
+            I-save
+          </ion-button>
+        </div>
+
+        <p *ngIf="isLocked(c) && !showArchived" style="color: #b45309; font-size: 12px; font-weight: 600; margin-top: 8px;">
+          Locked Case ({{ c.status }}) —cannot be edit.
+        </p>
+
+        <div *ngIf="!showArchived && (c.status || '').toString().trim().toLowerCase() === 'ready for cfa'" style="margin-top: 15px;">
+          <ion-button
+            expand="block"
+            color="secondary"
+            (click)="navigateToCfa(c); $event.stopPropagation()">
+            Open & Print CFA
+          </ion-button>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+
 </ion-content>
+
+<div class="global-bottom-nav">
+  <button class="nav-item" (click)="navigateTo('/home')">
+    <ion-icon name="home"></ion-icon>
+    <span>Home</span>
+  </button>
+  <button class="nav-item active" (click)="navigateTo('/complaints')">
+    <ion-icon name="document-text"></ion-icon>
+    <span>Complaints</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/audit-logs')">
+    <ion-icon name="shield-checkmark"></ion-icon>
+    <span>Logs</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/cfa-view')">
+    <ion-icon name="newspaper"></ion-icon>
+    <span>CFA</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/profile')">
+    <ion-icon name="person"></ion-icon>
+    <span>Profile</span>
+  </button>
+</div>

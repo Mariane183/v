@@ -1,13 +1,65 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>profile</ion-title>
+<ion-header>
+  <ion-toolbar style="--background: #ffffff;">
+     <ion-buttons slot="start">
+      <button class="back-btn" (click)="navigateTo('/home')">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+     
+    <ion-title style="color: #333; font-weight: bold;">Admin Profile</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">profile</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding profile-content">
+  <div class="profile-card">
+    <div class="avatar-circle">
+      <ion-icon name="person"></ion-icon>
+    </div>
+    <h2 class="admin-name">{{ adminName }}</h2>
+    <p class="admin-role">Barangay System Administrator</p>
+  </div>
+
+  <div class="details-section">
+    <h3 class="section-title">Account Information</h3>
+    <ion-list lines="none" class="custom-list">
+      <ion-item class="custom-item">
+        <ion-icon name="mail" slot="start" class="item-icon"></ion-icon>
+        <ion-label>
+          <p class="label-title">Email Address</p>
+          <h3 class="label-value">{{ adminEmail }}</h3>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <div class="logout-container">
+    <button class="logout-btn" (click)="logout()">
+      <ion-icon name="log-out"></ion-icon>
+      <span>LogOut</span>
+    </button>
+  </div>
 </ion-content>
+
+
+<div class="custom-bottom-nav">
+  <button class="nav-item" (click)="navigateTo('/home')">
+    <ion-icon name="home"></ion-icon>
+    <span>Home</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/complaints')">
+    <ion-icon name="document-text"></ion-icon>
+    <span>Complaints</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/audit-logs')">
+    <ion-icon name="shield-checkmark"></ion-icon>
+    <span>Logs</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/cfa-view')">
+  <ion-icon name="newspaper"></ion-icon>
+  <span>CFA</span>
+</button>
+  <button class="nav-item active" (click)="navigateTo('/profile')">
+    <ion-icon name="person"></ion-icon>
+    <span>Profile</span>
+  </button>
+</div>

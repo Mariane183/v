@@ -1,13 +1,55 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>audit-logs</ion-title>
+<ion-header>
+  <ion-toolbar class="header-toolbar">
+    <ion-buttons slot="start">
+      <button class="back-btn" (click)="navigateTo('/complaints')">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title class="header-title">Audit Logs</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">audit-logs</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding logs-content">
+  <div class="logs-container">
+    <h3 class="section-title">Activity History</h3>
+
+   
+    <div class="no-logs" *ngIf="logs.length === 0">
+      <ion-icon name="shield-checkmark-outline"></ion-icon>
+      <p>Nothing here for now.</p>
+    </div>
+
+    
+    <div class="log-card" *ngFor="let log of logs">
+      <div class="log-header">
+        <span class="admin-user">{{ log.action }}</span>
+        <span class="log-time">{{ log.created_at || log.timestamp }}</span>
+      </div>
+      <p class="log-action">{{ log.details }}</p>
+    </div>
+  </div>
 </ion-content>
+
+
+<div class="custom-bottom-nav">
+  <button class="nav-item" (click)="navigateTo('/home')">
+    <ion-icon name="home"></ion-icon>
+    <span>Home</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/complaints')">
+    <ion-icon name="document-text"></ion-icon>
+    <span>Complaints</span>
+  </button>
+  <button class="nav-item active" (click)="navigateTo('/audit-logs')">
+    <ion-icon name="shield-checkmark"></ion-icon>
+    <span>Logs</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/cfa-view')">
+    <ion-icon name="newspaper"></ion-icon>
+    <span>CFA</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/profile')">
+    <ion-icon name="person"></ion-icon>
+    <span>Profile</span>
+  </button>
+</div>

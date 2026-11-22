@@ -1,13 +1,121 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>cfa-view</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title>Certificate to File Action (CFA)</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">cfa-view</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding" style="--background: #f4f6f9;">
+
+
+  <div *ngIf="selectedCase">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; background: #ffffff; padding: 10px 14px; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);">
+      <ion-button
+        size="small"
+        fill="outline"
+        color="primary"
+        (click)="navigateTo('/cfa-view')">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Listahan ng CFA
+      </ion-button>
+
+      <ion-button
+        size="small"
+        color="secondary"
+        (click)="downloadPDF()">
+        <ion-icon name="print-outline" slot="start"></ion-icon>
+        Print CFA
+      </ion-button>
+    </div>
+
+    <div id="certificate-to-download" style="background: #ffffff; color: #1f2937; padding: 28px; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);">
+      <div class="cert-header" style="text-align: center; margin-bottom: 20px;">
+        <p style="margin: 2px 0; font-size: 14px; color: #1f2937;">REPUBLIKA NG PILIPINAS</p>
+        <p style="margin: 2px 0; font-size: 14px; color: #1f2937;">TANGGAPAN NG LUPON NG TAGAPAMAYAPA</p>
+        <p style="margin: 2px 0; font-size: 14px; color: #374151;">Barangay Hall</p>
+        <div class="cert-title" style="margin-top: 20px;">
+          <h4 style="margin: 0; font-size: 18px; font-weight: bold; text-decoration: underline; color: #111827;">
+            CERTIFICATE TO FILE ACTION
+          </h4>
+        </div>
+      </div>
+
+      <div class="cert-body" style="font-size: 14px; line-height: 1.6; color: #1f2937;">
+        <p><b>Case ID:</b> #{{ selectedCase.complaint_id ?? selectedCase.id }}</p>
+        <p><b>Complainant:</b> {{ selectedCase.complainant_name }}</p>
+        <p><b>Respondent:</b> {{ selectedCase.respondent_name }}</p>
+        <p><b>Status:</b> {{ selectedCase.status }}</p>
+        <br>
+        <p>This is to certify that:</p>
+        <p>1. There has been a personal confrontation between the parties before the Punong Barangay / Lupon Chairman;</p>
+        <p>2. That no conciliation/settlement was reached between the parties;</p>
+        <p>3. And therefore, the corresponding complaint for the dispute may now be filed in court or government office.</p>
+        <p style="margin-top: 16px;">
+          <b>Details:</b>
+          {{ selectedCase.hearing_notes || selectedCase.complaint_details }}
+        </p>
+      </div>
+
+      <div class="cert-footer" style="margin-top: 50px; display: flex; justify-content: flex-end;">
+        <div class="signature-box" style="text-align: center; color: #1f2937;">
+          <p style="margin: 2px 0;">___________________________________</p>
+          <p style="margin: 2px 0;"><b>Punong Barangay /Secretary</b></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!selectedCase">
+    <h3 style="margin-bottom: 14px; font-weight: bold; color: #1f2937;">Ready for CFA Cases</h3>
+
+    <p *ngIf="complaintsList.length === 0" style="color: #6b7280; text-align: center; margin-top: 28px;">
+      No Cases ready for CFA now.
+    </p>
+
+    <ion-card
+      *ngFor="let c of complaintsList"
+      (click)="selectCaseFromList(c)"
+      style="cursor: pointer; margin-bottom: 12px; --background: #ffffff; color: #1f2937; border: 1px solid #e5e7eb;">
+      <ion-card-content>
+        <h3 style="margin: 0 0 6px; color: #111827;"><b>Complainant:</b> {{ c.complainant_name }}</h3>
+        <p style="margin: 2px 0; color: #374151;"><b>Respondent:</b> {{ c.respondent_name }}</p>
+        <p style="margin: 4px 0 0; font-size: 13px; color: #4b5563;">
+          Status: <b>{{ c.status }}</b>
+        </p>
+
+        <div style="margin-top: 12px; display: flex; justify-content: flex-end;">
+          <ion-button
+            size="small"
+            color="primary"
+            (click)="selectCaseFromList(c); $event.stopPropagation()">
+            View / Print CFA
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
 </ion-content>
+
+
+<div class="global-bottom-nav">
+  <button class="nav-item" (click)="navigateTo('/home')">
+    <ion-icon name="home"></ion-icon>
+    <span>Home</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/complaints')">
+    <ion-icon name="document-text"></ion-icon>
+    <span>Complaints</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/audit-logs')">
+    <ion-icon name="shield-checkmark"></ion-icon>
+    <span>Logs</span>
+  </button>
+  <button class="nav-item active" (click)="navigateTo('/cfa-view')">
+    <ion-icon name="newspaper"></ion-icon>
+    <span>CFA</span>
+  </button>
+  <button class="nav-item" (click)="navigateTo('/profile')">
+    <ion-icon name="person"></ion-icon>
+    <span>Profile</span>
+  </button>
+</div>
